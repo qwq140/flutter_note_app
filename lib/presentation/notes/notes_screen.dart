@@ -33,7 +33,7 @@ class NotesScreen extends StatelessWidget {
               builder: (context) => const AddEditNoteScreen(),
             ),
           );
-          if(isSaved ?? false) {
+          if (isSaved ?? false) {
             viewModel.onEvent(const NotesEvent.loadNotes());
           }
         },
@@ -42,7 +42,26 @@ class NotesScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: ListView(
-          children: state.notes.map((e) => NoteItem(note: e)).toList(),
+          children: state.notes
+              .map(
+                (e) => NoteItem(
+                  note: e,
+                  onDeleteTap: () {
+                    viewModel.onEvent(NotesEvent.deleteNote(e));
+                    final snackBar = SnackBar(
+                      content: const Text('노트가 삭제되었습니다'),
+                      action: SnackBarAction(
+                        label: '취소',
+                        onPressed: () {
+                          viewModel.onEvent(NotesEvent.restoreNote());
+                        },
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
+                ),
+              )
+              .toList(),
         ),
       ),
     );
