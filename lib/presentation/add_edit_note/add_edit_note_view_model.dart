@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:note_app/domain/model/note.dart';
 import 'package:note_app/domain/repository/note_repository.dart';
+import 'package:note_app/domain/use_case/use_cases.dart';
 import 'package:note_app/presentation/add_edit_note/add_edit_note_event.dart';
 import 'package:note_app/presentation/add_edit_note/add_edit_note_ui_event.dart';
 import 'package:note_app/ui/colors.dart';
 
 class AddEditNoteViewModel with ChangeNotifier {
-  final NoteRepository repository;
+  final UseCases useCases;
 
   int _color = roseBud.value;
 
@@ -18,7 +19,7 @@ class AddEditNoteViewModel with ChangeNotifier {
   final _eventController = StreamController<AddEditNoteUiEvent>.broadcast();
   Stream<AddEditNoteUiEvent> get eventStream => _eventController.stream;
 
-  AddEditNoteViewModel(this.repository);
+  AddEditNoteViewModel(this.useCases);
 
   void onEvent(AddEditNoteEvent event) {
     event.when(
@@ -39,7 +40,7 @@ class AddEditNoteViewModel with ChangeNotifier {
     }
 
     if (id == null) {
-      await repository.insertNote(
+      await useCases.addNote(
         Note(
           title: title,
           content: content,
@@ -48,7 +49,7 @@ class AddEditNoteViewModel with ChangeNotifier {
         ),
       );
     } else {
-      await repository.updateNote(
+      await useCases.updateNote(
         Note(
           id: id,
           title: title,
