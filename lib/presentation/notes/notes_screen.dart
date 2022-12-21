@@ -44,21 +44,34 @@ class NotesScreen extends StatelessWidget {
         child: ListView(
           children: state.notes
               .map(
-                (e) => NoteItem(
-                  note: e,
-                  onDeleteTap: () {
-                    viewModel.onEvent(NotesEvent.deleteNote(e));
-                    final snackBar = SnackBar(
-                      content: const Text('노트가 삭제되었습니다'),
-                      action: SnackBarAction(
-                        label: '취소',
-                        onPressed: () {
-                          viewModel.onEvent(NotesEvent.restoreNote());
-                        },
+                (e) => GestureDetector(
+                  onTap: () async {
+                    bool? isSaved = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddEditNoteScreen(note: e),
                       ),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    if(isSaved ?? false) {
+                      viewModel.onEvent(const NotesEvent.loadNotes());
+                    }
                   },
+                  child: NoteItem(
+                    note: e,
+                    onDeleteTap: () {
+                      viewModel.onEvent(NotesEvent.deleteNote(e));
+                      final snackBar = SnackBar(
+                        content: const Text('노트가 삭제되었습니다'),
+                        action: SnackBarAction(
+                          label: '취소',
+                          onPressed: () {
+                            viewModel.onEvent(NotesEvent.restoreNote());
+                          },
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                  ),
                 ),
               )
               .toList(),
