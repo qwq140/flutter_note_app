@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
+          unselectedWidgetColor: Colors.white,
           primaryColor: Colors.white,
           backgroundColor: darkGray,
           canvasColor: darkGray,
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
                 backgroundColor: darkGray,
                 elevation: 0,
               ),
+          textTheme: Theme.of(context).textTheme.apply(
+            displayColor: Colors.white,
+            bodyColor: Colors.white,
+          ),
         ),
         home: const NotesScreen());
   }
